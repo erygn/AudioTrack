@@ -8,21 +8,39 @@ body {
     background-color: aqua;
 }
 
-.track {
+#track {
     border: 1px solid #000000;
-    width: 400px;
+    width: 1000px;
+    height: 400px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+}
+
+.elem {
+    border: 1px solid #000000;
+}
+
+.elemPlay {
+    background-color: blue;
 }
 
 #bar {
-    position: relative;
+    position: absolute;
     top: 0px;
     left: 0px;
-    height: 200px;
-    width: 5px;
+    height: 100%;
+    width: 2px;
     background-color: #FF0000;
 }
 
 #startTrack {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#stopTrack {
     padding: 10px;
     cursor: pointer;
 }
