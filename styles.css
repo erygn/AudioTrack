@@ -11,19 +11,16 @@ body {
 #track {
     border: 1px solid #000000;
     width: 1000px;
-    height: 400px;
+    height: 300px;
     position: relative;
     display: grid;
     grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
-    grid-template-rows: 20% 20% 20% 20% 20%;
+    grid-template-rows: 33.3% 33.3% 33.3%;
 }
 
 .elem {
     border: 1px solid #000000;
-}
-
-.elemPlay {
-    background-color: blue;
+    cursor: pointer;
 }
 
 #bar {
