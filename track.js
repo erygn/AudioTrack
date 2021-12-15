@@ -1,3 +1,47 @@
+//import Measure from './measure.js'
+
+class Measure {
+    noteFile = {'0': 'c.mp3', '1': 'd.mp3', '2': 'e.mp3'}
+
+    constructor(tps, subTps) {
+        this.tps = tps
+        this.subTps = subTps
+        let beginMat = []
+        for (let i = 0; i < 3; i++) {
+            let inter = []
+            for (let j = 0; j < tps + subTps; j++) {
+                inter.push('')
+            }
+            beginMat.push(inter)
+        }
+        this.matrix = beginMat
+    }
+
+    addNote(row, column) {
+        this.matrix[row][column] = this.noteFile[row]
+    }
+
+    removeNote(row, column) {
+        this.matrix[row][column] = ''
+    }
+
+    removeAll() {
+        let removeAll = []
+        for (let i = 0; i < 3; i++) {
+            let inter = []
+            for (let j = 0; j < tps + subTps; j++) {
+                inter.push('')
+            }
+            removeAll.push(inter)
+        }
+        this.matrix = removeAll
+    }
+
+    showMatrix() {
+        return this.matrix
+    }
+}
+
 let timeID, barLeft = 0, isRunning = false, clickOnPause = false
 
 let activCases = {
@@ -13,8 +57,14 @@ let activCases = {
     '900': {},
 }, allCases = {}
 
+let measure = []
 
 window.addEventListener('load', function () {
+    for (let i = 0; i < 4; i++) {
+        let ms = new Measure(4, 4)
+        measure.push(ms)
+    }
+
     var trk = this.document.getElementById("track")
     for (let i = 0; i < 30; i++) {
         let div = this.document.createElement('div')
