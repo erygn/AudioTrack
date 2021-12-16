@@ -7,9 +7,9 @@ class Measure {
         this.tps = tps
         this.subTps = subTps
         let beginMat = []
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < tps + subTps; i++) {
             let inter = []
-            for (let j = 0; j < tps + subTps; j++) {
+            for (let j = 0; j < 3; j++) {
                 inter.push('')
             }
             beginMat.push(inter)
@@ -18,23 +18,31 @@ class Measure {
     }
 
     addNote(row, column) {
-        this.matrix[row][column] = this.noteFile[row]
+        this.matrix[column][row] = this.noteFile[row]
     }
 
     removeNote(row, column) {
-        this.matrix[row][column] = ''
+        this.matrix[column][row] = ''
     }
 
     removeAll() {
         let removeAll = []
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < tps + subTps; i++) {
             let inter = []
-            for (let j = 0; j < tps + subTps; j++) {
+            for (let j = 0; j < 3; j++) {
                 inter.push('')
             }
             removeAll.push(inter)
         }
         this.matrix = removeAll
+    }
+
+    getTps() {
+        return this.tps
+    }
+
+    getSubTps() {
+        return this.subTps
     }
 
     showMatrix() {
@@ -66,7 +74,25 @@ window.addEventListener('load', function () {
     }
 
     var trk = this.document.getElementById("track")
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < measure.length; i++) {
+        let ms = this.document.createElement("div");
+        ms.classList.add('measure')
+        for (let j = 0; j < measure[i].getTps() * 3; j++) {
+            let tp = this.document.createElement("div")
+            tp.classList.add('time')
+            for (let k = 0; k < measure[i].getSubTps(); k++) {
+                let sub = this.document.createElement('div')
+                sub.classList.add('subTime')
+                sub.id = "elem" + i + j + k
+                sub.setAttribute("onclick", "clickElem('elem" + i + j + k + "')")
+                tp.appendChild(sub)
+            }
+            ms.appendChild(tp)
+        }
+        trk.appendChild(ms)
+    }
+
+    /* for (let i = 0; i < 30; i++) {
         let div = this.document.createElement('div')
         div.classList.add('elem')
         div.id = "elem" + i
@@ -79,7 +105,7 @@ window.addEventListener('load', function () {
         }
         div.setAttribute("onclick", "clickElem('elem" + i + "')")
         trk.appendChild(div)
-    }
+    } */
 });
 
 function clickElem(id) {
@@ -87,56 +113,14 @@ function clickElem(id) {
     if (id in activCases) {
         elem.style.backgroundColor = 'transparent'
         delete activCases[id]
-        if (id == 'elem0' || id == 'elem10' || id == 'elem20') {
-            delete activCases['0'][id]
-        } else if (id == 'elem1' || id == 'elem11' || id == 'elem21') {
-            delete activCases['100'][id]
-        } else if (id == 'elem2' || id == 'elem12' || id == 'elem22') {
-            delete activCases['200'][id]
-        } else if (id == 'elem3' || id == 'elem13' || id == 'elem23') {
-            delete activCases['300'][id]
-        } else if (id == 'elem4' || id == 'elem14' || id == 'elem24') {
-            delete activCases['400'][id]
-        } else if (id == 'elem5' || id == 'elem15' || id == 'elem25') {
-            delete activCases['500'][id]
-        } else if (id == 'elem6' || id == 'elem16' || id == 'elem26') {
-            delete activCases['600'][id]
-        } else if (id == 'elem7' || id == 'elem17' || id == 'elem27') {
-            delete activCases['700'][id]
-        } else if (id == 'elem8' || id == 'elem18' || id == 'elem28') {
-            delete activCases['800'][id]
-        } else if (id == 'elem9' || id == 'elem19' || id == 'elem29') {
-            delete activCases['900'][id]
-        }
     } else {
         elem.style.backgroundColor = 'blue'
         activCases[id] = true
-        if (id == 'elem0' || id == 'elem10' || id == 'elem20') {
-            activCases['0'][id] = true
-        } else if (id == 'elem1' || id == 'elem11' || id == 'elem21') {
-            activCases['100'][id] = true
-        } else if (id == 'elem2' || id == 'elem12' || id == 'elem22') {
-            activCases['200'][id] = true
-        } else if (id == 'elem3' || id == 'elem13' || id == 'elem23') {
-            activCases['300'][id] = true
-        } else if (id == 'elem4' || id == 'elem14' || id == 'elem24') {
-            activCases['400'][id] = true
-        } else if (id == 'elem5' || id == 'elem15' || id == 'elem25') {
-            activCases['500'][id] = true
-        } else if (id == 'elem6' || id == 'elem16' || id == 'elem26') {
-            activCases['600'][id] = true
-        } else if (id == 'elem7' || id == 'elem17' || id == 'elem27') {
-            activCases['700'][id] = true
-        } else if (id == 'elem8' || id == 'elem18' || id == 'elem28') {
-            activCases['800'][id] = true
-        } else if (id == 'elem9' || id == 'elem19' || id == 'elem29') {
-            activCases['900'][id] = true
-        }
     }
 }
 
 function playTrack() {
-    if (barLeft == 1000) {
+    if (barLeft == 1200) {
         barLeft = 0
     }
     clickOnPause = false
@@ -147,7 +131,7 @@ function playTrack() {
 }
 
 async function moveBar() {
-    if (barLeft < 1000 && isRunning == true) {
+    if (barLeft < 1200 && isRunning == true) {
         var bar = document.getElementById("bar");
         bar.style.left = barLeft + 1 + 'px';
         if (barLeft == 0) {
