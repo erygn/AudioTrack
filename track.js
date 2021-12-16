@@ -1,40 +1,30 @@
 //import Measure from './measure.js'
 
 class Measure {
-    noteFile = {'0': 'c.mp3', '1': 'd.mp3', '2': 'e.mp3'}
+    noteFile = {'2': 'c.mp3', '1': 'd.mp3', '0': 'e.mp3'}
 
     constructor(tps, subTps) {
         this.tps = tps
         this.subTps = subTps
-        let beginMat = []
-        for (let i = 0; i < tps + subTps; i++) {
+        let beginMat = [], actualRow = 0, countTps = 1
+        for (let i = 0; i < tps * 3; i++) {
             let inter = []
-            for (let j = 0; j < 3; j++) {
-                inter.push('')
+            for (let j = 0; j < subTps; j++) {
+                inter.push(this.noteFile[actualRow])
             }
             beginMat.push(inter)
+            if (countTps == 4) {
+                actualRow++;
+                countTps = 1
+            } else {
+                countTps++;
+            }
         }
         this.matrix = beginMat
     }
 
-    addNote(row, column) {
-        this.matrix[column][row] = this.noteFile[row]
-    }
-
-    removeNote(row, column) {
-        this.matrix[column][row] = ''
-    }
-
-    removeAll() {
-        let removeAll = []
-        for (let i = 0; i < tps + subTps; i++) {
-            let inter = []
-            for (let j = 0; j < 3; j++) {
-                inter.push('')
-            }
-            removeAll.push(inter)
-        }
-        this.matrix = removeAll
+    getNote(tps, sub) {
+        return this.matrix[tps][sub]
     }
 
     getTps() {
@@ -50,22 +40,11 @@ class Measure {
     }
 }
 
-let timeID, barLeft = 0, isRunning = false, clickOnPause = false
+let timeID, barLeft = 0, barTime = 0, barSubTime = 0, isRunning = false, clickOnPause = false
 
-let activCases = {
-    '0': {},
-    '100': {},
-    '200': {},
-    '300': {},
-    '400': {},
-    '500': {},
-    '600': {},
-    '700': {},
-    '800': {},
-    '900': {},
-}, allCases = {}
+let activCases = {}
 
-let measure = []
+let measure = [], actualMeasure = 0, beforeMeasure = -1, actualTime = 0, beforeTime = -1, actualSubTime = 0, beforeSubTime = -1, measureSize = 0, timeSize = 0, subTimeSize = 0
 
 window.addEventListener('load', function () {
     for (let i = 0; i < 4; i++) {
@@ -76,21 +55,27 @@ window.addEventListener('load', function () {
     var trk = this.document.getElementById("track")
     for (let i = 0; i < measure.length; i++) {
         let ms = this.document.createElement("div");
+        ms.id = i
         ms.classList.add('measure')
         for (let j = 0; j < measure[i].getTps() * 3; j++) {
             let tp = this.document.createElement("div")
+            tp.id = i +',' + j
             tp.classList.add('time')
             for (let k = 0; k < measure[i].getSubTps(); k++) {
                 let sub = this.document.createElement('div')
                 sub.classList.add('subTime')
-                sub.id = "elem" + i + j + k
-                sub.setAttribute("onclick", "clickElem('elem" + i + j + k + "')")
+                sub.id = i + "," + j + "," + k
+                sub.setAttribute("onclick", "clickElem('" + i + "," + j + "," + k + "')")
                 tp.appendChild(sub)
             }
             ms.appendChild(tp)
         }
         trk.appendChild(ms)
     }
+
+    measureSize = this.document.getElementById('0').offsetWidth
+    timeSize = this.document.getElementById('0,0').offsetWidth
+    subTimeSize = this.document.getElementById('0,0,0').offsetWidth
 
     /* for (let i = 0; i < 30; i++) {
         let div = this.document.createElement('div')
@@ -110,18 +95,32 @@ window.addEventListener('load', function () {
 
 function clickElem(id) {
     var elem = document.getElementById(id)
-    if (id in activCases) {
+    let idC = id.split(",")
+    let idF = idC[0] + ',' + idC[1] % 4 + ',' + idC[2]
+    if (idF in activCases && activCases[idF].includes(measure[idC[0]].getNote(idC[1], idC[2]))) {
         elem.style.backgroundColor = 'transparent'
-        delete activCases[id]
+        if (activCases[idF].length == 0) {
+            delete activCases[idF]
+        } else {
+            activCases[idF].splice(activCases[idF].indexOf(measure[idC[0]].getNote(idC[1], idC[2])), 1)
+        }
     } else {
-        elem.style.backgroundColor = 'blue'
-        activCases[id] = true
+        elem.style.backgroundColor = '#dfe6e9'
+        if (!(idF in activCases)) {
+            activCases[idF] = []
+        }
+        activCases[idF].push(measure[idC[0]].getNote(idC[1], idC[2]))
+        //console.log(measure[idC[0]].getNote(idC[1], idC[2]))
     }
 }
 
 function playTrack() {
-    if (barLeft == 1200) {
+    if (barLeft == 1200 || barLeft == 0) {
         barLeft = 0
+        barTime = 0
+        barSubTime = 0
+        beforeSubTime = -1
+
     }
     clickOnPause = false
     if (isRunning == false) {
@@ -134,49 +133,33 @@ async function moveBar() {
     if (barLeft < 1200 && isRunning == true) {
         var bar = document.getElementById("bar");
         bar.style.left = barLeft + 1 + 'px';
-        if (barLeft == 0) {
-            Object.keys(activCases['0'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 100) {
-            Object.keys(activCases['100'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 200) {
-            Object.keys(activCases['200'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 300) {
-            Object.keys(activCases['300'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 400) {
-            Object.keys(activCases['400'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 500) {
-            Object.keys(activCases['500'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 600) {
-            Object.keys(activCases['600'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 700) {
-            Object.keys(activCases['700'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 800) {
-            Object.keys(activCases['800'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        } else if (barLeft == 900) {
-            Object.keys(activCases['900'] || {}).forEach(item => {
-                this.playSound(allCases[item].song)
-            })
-        }
         barLeft += 1;
-        timeID = setTimeout(function() { this.moveBar()}, 1);   
+        barTime += 1
+        barSubTime += 1
+        if (barTime >= measureSize) {
+            barTime = 0
+        }
+        if (barSubTime >= timeSize) {
+            barSubTime = 0
+        }
+        actualMeasure = parseInt(barLeft / measureSize)
+        actualTime = parseInt(barTime / timeSize)
+        actualSubTime = parseInt(barSubTime / subTimeSize)
+        if (beforeSubTime != actualSubTime) {
+            let id = String(actualMeasure + ',' + actualTime + ',' + actualSubTime)
+            if (id in activCases) {
+                for (let i = 0; i < activCases[id].length; i++) {
+                    this.playSound(activCases[id][i])
+                }
+            }
+            beforeSubTime = actualSubTime
+        }
+        
+        /* if (actualTime == 0 && beforeTime != actualTime || actualTime == 1 && beforeTime != actualTime || actualTime == 2 && beforeTime != actualTime || actualTime == 3 && beforeTime != actualTime) {
+            this.playSound("c.mp3")
+            beforeTime = actualTime
+        } */
+        timeID = setTimeout(function() { this.moveBar()}, 12);   
     } else {
         isRunning = false
         clearTimeout(timeID)
@@ -210,4 +193,7 @@ function stopTrack() {
     var bar = document.getElementById("bar");
     bar.style.left = '0px';
     barLeft = 0
+    barTime = 0
+    barSubTime = 0
+    beforeSubTime = -1
 }

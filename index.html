@@ -6,17 +6,21 @@
 
     <body>
         <div class="main">
-            <div id="track">
-                <div id="bar"></div>
+            <div class="zone">
+                <div id="track">
+                    <div id="bar"></div>
+                </div>
             </div>
             
-            <div>
+            <div class="tools">
                 <span onclick="playTrack()" id="startTrack">Play</span>
                 <span onclick="pauseTrack()" id="pauseTrack">Pause</span>
                 <span onclick="stopTrack()" id="stopTrack">Stop</span>
 
                 <input type="checkbox" id="repeat" name="repeat">
                 <label for="repeat">Repeat</label>
+
+                <p>Tempo : 60</p>
             </div>
         </div>
         <!--<script type="module" src="track.js"></script>-->

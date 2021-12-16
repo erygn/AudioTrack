@@ -5,13 +5,30 @@ body {
 .main {
     height: 100vh;
     width: 100%;
-    background-color: aqua;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2d3436;
+}
+
+.zone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.tools {
+    width: 100%;
+    background-color: #FFFFFF;
 }
 
 #track {
-    border: 1px solid #000000;
+    border-top: 1px solid #dfe6e9;
+    border-right: 1px solid #dfe6e9;
     width: 1200px;
     height: 180px;
+    background-color: #444849;
     position: relative;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
@@ -19,25 +36,26 @@ body {
 }
 
 .measure {
-    border: 1px solid #000000;
+    border-left: 2px solid #0984e3;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
     grid-template-rows: 33.3% 33.3% 33.3%;
 }
 
 .time {
-    border: 1px solid #000000;
+    border-left: 1px solid #dfe6e9;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
 }
 
 .subTime {
-    /* border: 1px solid #000000; */
+    border-right: 1px solid #dfe6e9;
+    border-bottom: 1px solid #dfe6e9;
     cursor: pointer;
 }
 
 .elem {
-    border: 1px solid #000000;
+    border: 1px solid #dfe6e9;
     cursor: pointer;
 }
 
@@ -46,8 +64,8 @@ body {
     top: 0px;
     left: 0px;
     height: 100%;
-    width: 2px;
-    background-color: #FF0000;
+    width: 4px;
+    background-color: #d63031;
 }
 
 #startTrack {
